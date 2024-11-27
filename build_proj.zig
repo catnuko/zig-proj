@@ -257,31 +257,15 @@ const all_libproj_headers = headers_libproj;
 const include_dirs = [_][]const u8{
     src_path,
     proj_dir ++ "include/",
+    dir ++ "vendor/"
 };
-// const common_args = [_][]const u8{
-//     "-g0",
-//     "-O",
-//     "-Wduplicated-cond",
-//     "-Wduplicated-branches",
-//     "-Wlogical-op",
-// };
-// const geos_c_args = common_args ++ [_][]const u8{
-//     "-Wmissing-prototypes",
-// };
-
-// const geos_cpp_args = common_args ++ [_][]const u8{
-//     "-Weffc++",
-//     "-Woverloaded-virtual",
-//     "-Wzero-as-null-pointer-constant",
-//     "-std=c++11",
-// };
-const geos_c_args =  [_][]const u8{
+const common_args = [_][]const u8{
     "-g0",
     "-O",
 };
-const geos_cpp_args = [_][]const u8{
-    "-g0",
-    "-O",
+const c_args =  common_args ++ [_][]const u8{
+};
+const cpp_args = common_args ++ [_][]const u8{
     "-std=c++14",
 };
 
@@ -307,6 +291,16 @@ pub const Library = struct {
 };
 
 pub fn createCAPI(b: *std.Build, target: std.Build.ResolvedTarget, optimize: std.builtin.OptimizeMode) !Library {
+    var all_cpp_flags = std.ArrayList([]const u8).init(b.allocator);
+    const CURL_ENABLED = b.option(bool, "CURL_ENABLED", "Enable Curl support") orelse false;
+    if (CURL_ENABLED){
+        all_cpp_flags.append("-DCURL_ENABLED") catch @panic("OOM");
+    }
+    const ENABLE_TIFF = b.option(bool, "ENABLE_TIFF", "Enable TIFF support to read some grids") orelse false;
+    if (ENABLE_TIFF){
+        all_cpp_flags.append("-DENABLE_TIFF") catch @panic("OOM");
+    }
+
     var c_api = b.addStaticLibrary(.{
         .name = "proj",
         .target = target,
@@ -321,17 +315,17 @@ pub fn createCAPI(b: *std.Build, target: std.Build.ResolvedTarget, optimize: std
     }
     //add sqlite3 dependency
     c_api.addIncludePath(b.path("src/sqlite3/"));
-    c_api.addCSourceFiles(.{ .files = &.{
-        "src/sqlite3/sqlite3.c",
-    }, .flags = &.{} });
-
+    c_api.addCSourceFile(.{ .file = b.path("src/sqlite3/sqlite3.c"), .flags = &.{} });
+    for(cpp_args)|arg|{
+        all_cpp_flags.append(arg) catch @panic("OOM");
+    }
     c_api.addCSourceFiles(.{
         .files = &all_libproj_cpp_sources,
-        .flags = &geos_cpp_args,
+        .flags = all_cpp_flags.items,
     });
     c_api.addCSourceFiles(.{
         .files = &all_libproj_c_sources,
-        .flags = &geos_c_args,
+        .flags = &c_args,
     });
     c_api.linkLibCpp();
     return Library{ .step = c_api };
