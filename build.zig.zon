@@ -1,13 +1,15 @@
 .{
     .name = "zig-proj",
     .version = "0.0.1",
-    .dependencies = .{},
+    .dependencies = .{
+        .proj = .{
+            .url = "https://github.com/OSGeo/PROJ/releases/download/9.5.0/proj-9.5.0.zip",
+            .lazy = true
+        }
+    },
     .paths = .{
         "build.zig",
         "build.zig.zon",
         "src",
-        // For example...
-        //"LICENSE",
-        //"README.md",
     },
 }
