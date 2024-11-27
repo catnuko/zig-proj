@@ -267,7 +267,7 @@ pub const Options = struct {
 pub const Library = struct {
     step: *std.Build.Step.Compile,
 
-    pub fn link(self: Library, b: *std.Build, other: *std.Build.Step.Compile, opts: Options) void {
+    pub fn link(self: Library, b: *std.Build, other: *std.Build.Step.Compile) void {
         for (include_dirs) |d| {
             other.addIncludePath(.{ .src_path = .{
                 .sub_path = d,
@@ -275,9 +275,6 @@ pub const Library = struct {
             } });
         }
         other.linkLibrary(self.step);
-        if (opts.import_name) |_| {
-            // other.addPackagePath(import_name, package_path);
-        }
     }
 };
 

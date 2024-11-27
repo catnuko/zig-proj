@@ -15,6 +15,12 @@ pub fn build(b: *std.Build) !void {
 
     const proj = try build_proj.createCAPI(b,target,optimize);
 
+    const zig_proj_mod = b.addModule("root",.{
+        .root_source_file = b.path("src/c_api.zig"),
+        .target = target,
+        .optimize = optimize,
+    });
+
     for (examples) |ex| {
         const exe = b.addExecutable(.{
             .name = ex.cmd,
@@ -22,7 +28,9 @@ pub fn build(b: *std.Build) !void {
             .target = target,
             .optimize = optimize,
         });
-        proj.link(b, exe, .{ .import_name = "proj" });
+        exe.root_module.addImport("zig-proj",zig_proj_mod);
+        proj.link(b,exe);
+
         b.installArtifact(exe);
 
         const run_cmd = b.addRunArtifact(exe);
