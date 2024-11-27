@@ -1,11 +1,9 @@
 # zig-proj
-zig binding for the [PROJ](https://github.com/OSGeo/PROJ)
+zig binding for the [PROJ@9.5.0](https://github.com/OSGeo/PROJ/tree/9.5.0)
 
 ## Build
 require list
 * Zig`0.13.0`
-* PROJ`9.5.0`
-* sqlite3
 
 ```bash
 $ git clone --recurse-submodules https://github.com/catnuko/zig-proj

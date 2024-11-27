@@ -319,6 +319,12 @@ pub fn createCAPI(b: *std.Build, target: std.Build.ResolvedTarget, optimize: std
             .sub_path = d,
         } });
     }
+    //add sqlite3 dependency
+    c_api.addIncludePath(b.path("src/sqlite3/"));
+    c_api.addCSourceFiles(.{ .files = &.{
+        "src/sqlite3/sqlite3.c",
+    }, .flags = &.{} });
+
     c_api.addCSourceFiles(.{
         .files = &all_libproj_cpp_sources,
         .flags = &geos_cpp_args,
@@ -328,6 +334,5 @@ pub fn createCAPI(b: *std.Build, target: std.Build.ResolvedTarget, optimize: std
         .flags = &geos_c_args,
     });
     c_api.linkLibCpp();
-    c_api.linkSystemLibrary("sqlite3");
     return Library{ .step = c_api };
 }
