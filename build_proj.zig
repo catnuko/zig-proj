@@ -244,16 +244,6 @@ const all_libproj_c_sources = [_][]const u8{
     // src_path_rel ++ "wkt2_generated_parser.h",
 };
 
-const headers_libproj = [_][]const u8{
-    src_path_rel ++ "proj.h",
-    src_path_rel ++ "proj_experimental.h",
-    src_path_rel ++ "proj_constants.h",
-    src_path_rel ++ "proj_symbol_rename.h",
-    src_path_rel ++ "geodesic.h",
-};
-
-const all_libproj_headers = headers_libproj;
-
 const include_dirs = [_][]const u8{
     src_path,
     proj_dir ++ "include/",
@@ -266,6 +256,7 @@ const common_args = [_][]const u8{
 const c_args =  common_args ++ [_][]const u8{
 };
 const cpp_args = common_args ++ [_][]const u8{
+    "-DPROJ_DATA=\"" ++ dir ++ "vendor/data/\"",
     "-std=c++14",
 };
 
@@ -300,7 +291,6 @@ pub fn createCAPI(b: *std.Build, target: std.Build.ResolvedTarget, optimize: std
     if (ENABLE_TIFF){
         all_cpp_flags.append("-DENABLE_TIFF") catch @panic("OOM");
     }
-
     var c_api = b.addStaticLibrary(.{
         .name = "proj",
         .target = target,
