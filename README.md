@@ -13,3 +13,10 @@ $ zig build run-convert
 Output easting: 6.91875632137542e5, northing: 6.098907825129169e6 (meters)
 Inverse applied. Longitude: 1.2e1, latitude: 5.5e1 (degrees)
 ```
+
+## Install
+
+```bash
+zig fetch --save=zig-proj https://github.com/catnuko/zig-proj/archive/${COMMIT}.tar.gz
+
+```

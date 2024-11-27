@@ -1,6 +1,6 @@
 .{
     .name = "zig-proj",
-    .version = "0.0.1",
+    .version = "0.0.2",
     .dependencies = .{
         .proj = .{
             .url = "file:libs/proj-9.5.0.tar.gz",
