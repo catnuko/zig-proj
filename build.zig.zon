@@ -3,9 +3,15 @@
     .version = "0.0.1",
     .dependencies = .{
         .proj = .{
-            .url = "https://github.com/OSGeo/PROJ/releases/download/9.5.0/proj-9.5.0.zip",
+            .url = "file:libs/proj-9.5.0.tar.gz",
+            .hash = "1220fad8b7a14c58d976791acfaf629762d9db730758fbfffeff0286c3ae66dc1462",
             .lazy = true
-        }
+        },
+        .sqlite3 = .{
+            .url = "file:libs/sqlite-amalgamation-3460100.zip",
+            .hash = "12206bc219bf56b927469c7d43f53c23fe2801c8158800f8613a783956998b7fc37f",
+            .lazy = true
+        },
     },
     .paths = .{
         "build.zig",
